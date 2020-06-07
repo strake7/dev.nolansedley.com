@@ -7,17 +7,13 @@ module.exports = {
   ],
   // Customize your site metadata:
   siteMetadata: {
-    title: `My Blog Title`,
-    author: `My Name`,
-    description: `My site description...`,
+    title: `Nolan Sedley's Blog`,
+    author: `Nolan Sedley `,
+    description: `Nolan Sedley's Blog`,
     social: [
       {
-        name: `twitter`,
-        url: `https://twitter.com/gatsbyjs`,
-      },
-      {
         name: `github`,
-        url: `https://github.com/gatsbyjs`,
+        url: `https://github.com/strake7`,
       },
     ],
   },
