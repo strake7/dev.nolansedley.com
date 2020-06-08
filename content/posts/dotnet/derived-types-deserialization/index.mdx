@@ -1,8 +1,8 @@
 ---
 title: Deserializing Derived Types in a .NET Core 3 API
 date: 2020-06-07
-# image: ./sunset-beach.jpg TODO: need image
-# imageAlt: A beach at sunset with crashing waves.
+image: ./dotnet-api-derived-types-code-example.png
+imageAlt: Code capture of derived types registration
 ---
 
 As your .NET API matures you may find it lacks the ability to operate on a request that has a resource with multiple possible forms. As a primitive example let's say our API accepts a collection of musicians all derived from a common type; the request we expect to receive looks like this:
@@ -140,7 +140,18 @@ public abstract class Musician{...}
 **Success!** 
 
 ## Anything else?
-- TODO: Documentation is still important. 
+- Documentation is important. The OpenApi specification has support for derived types and as of [this merge](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/pull/1041) into [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) you can get basic support for polymorphic schemas by using:
+```c#
+services.AddSwaggerGen(c =>
+{
+    c.GeneratePolymorphicSchemas(discriminatorSelector: d => {
+        if (d == typeof(Musician))
+            return "instrumentType";
+        return null;
+    });
+}
+```
+![alt](./dotnet-api-derived-types-doc-example.png)
 - There are a number of ways to design an API contract. One could argue that composition is a more favorable approach over inheritance for this example. Analyzing service design was not a goal of this article.
 
 ## Source
