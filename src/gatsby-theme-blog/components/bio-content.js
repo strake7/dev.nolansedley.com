@@ -18,9 +18,7 @@ export default function Bio() {
       <Styled.a href="https://www.linkedin.com/in/nsedley/" target="blank">
         LinkedIn
       </Styled.a>{" "}
-      and <Styled.a href="https://github.com/strake7" target="blank">GitHub</Styled.a>.
-      <br />
-      <i>Code on. </i>
+      and <Styled.a href="https://github.com/strake7" target="blank">GitHub</Styled.a>.      
     </>
   )
 }
