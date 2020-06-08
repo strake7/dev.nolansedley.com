@@ -7,9 +7,9 @@ module.exports = {
   ],
   // Customize your site metadata:
   siteMetadata: {
-    title: `Nolan Sedley's Blog`,
-    author: `Nolan Sedley `,
-    description: `Nolan Sedley's Blog`,
+    title: `Nolan Sedley's Development Blog`,
+    author: `Nolan Sedley`,
+    description: `Development with Nolan.`,
     social: [
       {
         name: `github`,
