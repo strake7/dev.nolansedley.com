@@ -9,7 +9,7 @@ module.exports = {
   siteMetadata: {
     title: `Nolan Sedley's Development Blog`,
     author: `Nolan Sedley`,
-    description: `Development with Nolan.`,
+    description: `Software development with Nolan.`,
     social: [
       {
         name: `github`,
