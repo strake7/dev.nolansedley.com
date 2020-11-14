@@ -1,50 +1,77 @@
-# Static Webpages and JAM-stack
-The use of a SPA application for website development has reigned supreme for several years now and before that MVC web applications were all the rage.
-We learned a lot from these evolutions but these solutions can have considerable and sometimes needless overhead when wanting to develop something simple.
+---
+title: Static Webpages and Jamstack
+date: 2020-11-12
+image: ./windows-terminals.png
+imageAlt: Image of gatsby cli
+---
 
-Say, for example, we are building a blog web site. Do need complex javascript framework operating in the client's browser? 
-A typical blog is just a publication of *static* content; usually just text and some pictures. 
-For this kind of site we should be able to just serve html content with little to no client-side javascript. 
-OK, you might say this is a good fit for MVC server rendered web pages. You could do that but do you really need a server-side language to process the web request and construct a view?
-Remember the cost of having a server receive the request, run your message handler, compile a web page and serve that content.
-A far more optimal solution would be to pre-render the html page earlier, perhaps at build time, rather than compiling it repeatedly at runtime. 
+The use of a SPA application for website development has reigned supreme for
+several years now and before that MVC web applications were all the rage. No
+doubt, we learned a lot from these employing these solutions but they can
+sometimes have considerable and needless overhead when developing something
+simple.
 
-Of course, we could simply write some static html files and call it good but there is sure to be a large amount of duplication employing such an approach.
-Our collective inner-developer might cringe at such a prospect.
-We may even be tempted to use the same GUI static site builder that we used in our high-school years.
-Fortunately that will not be necessary. 
+Say, for example, we are building a blog web page. Do we really need a complex
+javascript framework with an internal routing system operating in the client's
+browser? A typical blog is just a publication of _static_ content; usually just
+text and some pictures. For a site such, as this we should be able to just serve
+html content with little to no client-side javascript. You might conclude that
+this is a good fit for server-rendered web pages but is it necessary to have a
+dedicated server-side framework to construct a web page on every request?
+Remember the cost of having a server receive the request, run your message
+handler, compile a web page and serve that content. A far more optimal solution
+would be to pre-render the html page earlier, at build time, rather than
+compiling it repeatedly at runtime.
+
 ## Enter Jamstack
-Fortunately the tooling for building static sites has progressed alongside other approaches.
-Enter Jamstack.
-You can simply go write some static html files and call it good.
-Static webpages are the core
 
-## Getting started
-Suggested frameworks:
+Of course, we could simply write some static html files and call it good but
+there is sure to be a large amount of duplication and we might lose out on some
+tooling with such an approach. Our inner-developer might cringe at such a
+prospect. Fortunately the tooling for building pre-rendered static `sites has
+progressed. Enter Jamstack, an architecture designed to solve this problem using
+the modern tools and workflows web developers have come to love. With a static
+site, files can be served directly from a CDN enabling the site to **easily
+scale and cutting back on cost, complexity and risk**.
+
+Let's decompose this stack further. Here are the primary attributes of a
+Jamstack site:
+
+1. The site is pre-rendered, meaning web pages are generated at the time of
+   build.
+1. The pre-rendered site is deployed to a CDN where requests for pages simply
+   return the already compiled HTML page.
+1. In the browser, the site uses **Javascript** as the runtime. Given the site
+   is pre-rendered this may be a minimal amount of client-side operations.
+1. Server side operations are abstracted into reusable APIs and accessed over
+   via JavaScript.
+1. Source files are written in some **Markup** language, such as Markdown, that
+   can be compiled to HTML using a static site generator.
+
+## Getting Started
+
+The best way to understand the stack is to work with it. There are several
+Jamstack-oriented frameworks that are easy to get started with:
+
 1. [Gatsby](https://www.gatsbyjs.org/): this blog is built using Gatsby. It is quite easy to get started with and has an excellent community surrounding it with a plethora of starter templates and plugins.
 2. [Next.js](https://nextjs.org/): equally as great as Gatsby with a bit less boilerplate. I have preferred this framework for mixed static and server-rendered sites.
 3. [Other generators](https://jamstack.org/generators/)
 
-Think of a kind of site that you would like to create. 
-Here are some ideas that I think are befitting a static website:
+With Gatsby or Next.js you write React components from which the the static
+pages are rendered on build. This site is built using the Gatsby blog starter template. Think of a kind of site that you would like to
+create. Here are some ideas that I think are befitting a Jamstack:
+
 1. Blog
 1. Documentation
 1. Company information
-1. Announcement
+1. Announcements
 1. Resume
-1. Marketplace
+1. Product listings
 
-## Further Reading
+Jamstack is a modern and fresh architecture for building pre-rendered sites. So
+when building your next website, do not feel obligated to build a SPA
+application or dedicate a server for rendering runtime pages. Pre-rendered sites
+are quite powerful and have a degree of simplicity that will enable you to
+quickly produce results.
 
-routing library to determine what I am sure we can all remember our first website; chances are it was likely static. for certain though these solutions can sometimes be overkill for certain problems.
-
-All that has brought us what may seem like a full-circle; back to static applications. Building static websites using dreamweaver was some of my first introductions to the software world. The way to build these static sites has fortunately evolved to the point of many commonplace frameworks supporting a static site build output. I am 
-
- Albeit the way of building these static web sites has evolved but the core principles persist:
-Static sites are:
-1. Fast
-2. Cheap
-3. 
-
-
-So when you are building you're next website do not feel the need to create a full SPA application or even develop server-side code. Leverage the organic mechanisms of a website and develop static pages using  Consider 
+For further reading, hit up the official [Jamstack](https://jamstack.org/what-is-jamstack/) website.
