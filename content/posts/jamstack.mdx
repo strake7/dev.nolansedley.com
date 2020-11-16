@@ -14,33 +14,34 @@ simple.
 Say, for example, we are building a blog web page. Do we really need a complex
 javascript framework with an internal routing system operating in the client's
 browser? A typical blog is just a publication of _static_ content; usually just
-text and some pictures. For a site such, as this we should be able to just serve
+text and some pictures. For site such as this we should be able to just serve
 html content with little to no client-side javascript. You might conclude that
 this is a good fit for server-rendered web pages but is it necessary to have a
 dedicated server-side framework to construct a web page on every request?
 Remember the cost of having a server receive the request, run your message
 handler, compile a web page and serve that content. A far more optimal solution
-would be to pre-render the html page earlier, at build time, rather than
-compiling it repeatedly at runtime.
+would be to pre-render the html page earlier, at the time of the build, rather
+than compiling it repeatedly at run-time.
 
 ## Enter Jamstack
 
 Of course, we could simply write some static html files and call it good but
-there is sure to be a large amount of duplication and we might lose out on some
-tooling with such an approach. Our inner-developer might cringe at such a
-prospect. Fortunately the tooling for building pre-rendered static `sites has
-progressed. Enter Jamstack, an architecture designed to solve this problem using
-the modern tools and workflows web developers have come to love. With a static
-site, files can be served directly from a CDN enabling the site to **easily
-scale and cutting back on cost, complexity and risk**.
+there is sure to be a large amount of duplication and we will certainly lose out
+on tooling with such an approach. Our inner-developer might cringe at such a
+prospect. Fortunately the tooling for building pre-rendered static sites has
+progressed. Enter **Jamstack**, an architecture designed to solve this problem
+using the modern tools and workflows web developers have come to love. With a
+pre-rendered site build using Jamstack, files can be served directly from a CDN
+enabling the site to **easily scale and cutting back on cost, complexity and
+risk**.
 
 Let's decompose this stack further. Here are the primary attributes of a
 Jamstack site:
 
 1. The site is pre-rendered, meaning web pages are generated at the time of
    build.
-1. The pre-rendered site is deployed to a CDN where requests for pages simply
-   return the already compiled HTML page.
+1. The site is deployed to a CDN where requests for pages simply
+   return the pre-rendered HTML page.
 1. In the browser, the site uses **Javascript** as the runtime. Given the site
    is pre-rendered this may be a minimal amount of client-side operations.
 1. Server side operations are abstracted into reusable APIs and accessed over
@@ -68,7 +69,7 @@ create. Here are some ideas that I think are befitting a Jamstack:
 1. Resume
 1. Product listings
 
-Jamstack is a modern and fresh architecture for building pre-rendered sites. So
+Jamstack is a modern architecture for building pre-rendered sites. So
 when building your next website, do not feel obligated to build a SPA
 application or dedicate a server for rendering runtime pages. Pre-rendered sites
 are quite powerful and have a degree of simplicity that will enable you to
