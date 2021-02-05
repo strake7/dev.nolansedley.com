@@ -1,8 +1,8 @@
 ---
 title: The `TOP 1` Threat
-date: 2021-2-2
-image: ./gatsby.png
-imageAlt: Image of gatsby cli
+date: 2021-02-02
+image: ./top1.png
+imageAlt: Image of TOP 1 query
 ---
 Well, 'Threat' is an extreme word to use but it is worth the buzz, right? 
 
