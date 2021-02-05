@@ -4,7 +4,7 @@ date: 2021-02-02
 image: ./top1.png
 imageAlt: Image of TOP 1 query
 ---
-Well, 'Threat' is an extreme word to use but it is worth the buzz, right? 
+Well, 'Threat' is an extreme word to use but is worth the buzz, right? 
 
 This article stems from a comment a coworker posted on a repository I also
 monitor. The comment called into question the use of `TOP 1` in a MSSQL query
