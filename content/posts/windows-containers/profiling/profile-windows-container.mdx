@@ -1,33 +1,43 @@
 ---
-title: Profiling Memory for a .NET application running in a Windows Docker Container 
+title: Profiling memory of a .NET application in a Windows Docker Container 
 date: 2021-05-02
-image: ./top1.png
-imageAlt: screenshot of kubectl
 ---
-Recently at Mindbody, we have made a push to containerize and ship these applications to a Cloud provider. Some older applications are still based in .NET Framework. AS such we needed to run these in [Windows Container Images](https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/container-base-images). Once we got through the hoops of running our applications in a container we found that the memory usage was unexpectedly high. Unfortunately, the instrumentation surround windows docker containers is not a first-class citizen yet. In the meantime your may find yourself needing to 
-Windows docker containers? Sometimes, you do what you got to do. 
-Running a memory profiler on your windows container.
 
-1. Ensure your kubectl is setup and you are able to list the target pods. Shell into the pod you are wanting to profile:
-   > kubectl exec -it somepod-abc-123 -n my-namespace powershell
+At Mindbody, we made a recent push to containerize and ship our .NET framework applications to an AWS hosted Kubernetes cluster. 
+We used [Windows Container Images](https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/container-base-images) to host our applications.
+Once deployed, we noticed that our applications unexpectedly required an excessive amount of memory; more so than the bare-metal predecessor environment.
 
-2. Check out the memory allocation per process on the pod:
-    > get-process | Group-Object -Property ProcessName | Format-Table Name, @{n='Mem (KB)';e={'{0:N0}' -f (($_.Group|Measure-Object WorkingSet64 -Sum).Sum / 1KB)};a='right'} -AutoSize
+In such situations, you may find yourself wanting to gain a better picture of the process memory usage on a running pod.
+A quick solution is to deploy and run a memory profiler on your windows pod:
 
-3. Download your standalone profiler of choice. For me, I recommend [JetBrains DotMemory](https://www.jetbrains.com/help/dotmemory/Profile_ASP_Web_Site.html#profiling-via-console-tools). Copy an archive of these tools to your pod:
-    > kubectl cp '.\dotmemory.zip' somepod-abc-123:/PerformanceTools.zip -n my-namespace 
+1. Ensure your kubectl is configured and that you can list the target pods. Shell into the pod you want to profile:
 
-4. Extract the archive contents
-    > Expand-Archive .\dotmemory.zip
+  `kubectl exec -it somepod-abc-123 -n my-namespace powershell`
 
-2. Run the profiler and target the high memory process. In my case, I was aiming to profile the w3wp.exe process
+2. Investigate the memory allocation per process on the pod:
+  `get-process | Group-Object -Property ProcessName | Format-Table Name, @{n='Mem (KB)';e={'{0:N0}' -f (($_.Group|Measure-Object WorkingSet64 -Sum).Sum / 1KB)};a='right'} -AutoSize`
 
+  ![Memory usage on the pod shows w3wp.exe(IIS) as highest.](./mem_usage.png)
 
-Note: In the event that receive an error indicating a profiler is already attached, you will need to disable that exisitng profiler and restart IIS. For me, the .NET NewRelic agent was already attached and as such I needed to disable the agent via configuration and restart IIS. 
+3. Download your standalone profiler of choice.
+([JetBrains DotMemory](https://www.jetbrains.com/help/dotmemory/Profile_ASP_Web_Site.html#profiling-via-console-tools) is a fantastic and well-featured tool). 
+Copy an archive of the profiler to your pod:
 
-3. Copy the snapshot output back to your local machine and view the results
-   >kubectl cp mindbody-api-affiliate-canary-558f5968c4-8s6ch:/snapshots /snapshots -n mindbody-api-affiliate
+  `kubectl cp '.\dotmemory.zip' somepod-abc-123:/PerformanceTools.zip -n my-namespace`
+    
+4. Extract the archive contents:
+    
+  `Expand-Archive .\dotmemory.zip`
 
+2. Run the profiler against the high memory process:
+    
+  `dotmemory.exe get-snapshot 1234 --save-to-dir=c:/memsnapshots`
 
+  ![CLI running dotmemory executable](./profiler_run.png)
 
-Check your 
+> *Note: you will want to use the `snapshot` or `attach` command instead of `start-iis` to avoid restarting the process. Restarting IIS may cause a whole container restart depending on your setup.*
+> *Additionally, if you receive an error indicating a profiler is already attached, you will need to disable that existing profiler and restart IIS. This may entail changing the Dockerfile for the container. For me, the .NET NewRelic agent was previously attached.*
+
+3. Copy the snapshot output back to your local machine and view the results:
+    
+  `kubectl cp mindbody-api-affiliate-canary-558f5968c4-8s6ch:/snapshots /snapshots -n mindbody-api-affiliate`
