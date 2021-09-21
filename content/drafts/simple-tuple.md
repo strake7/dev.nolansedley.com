@@ -1,1 +1,0 @@
-https://peterdaugaardrasmussen.com/2020/02/22/c-how-to-make-a-list-of-value-tuples-with-named-values/

@@ -1,1 +1,0 @@
-Gartner Hype curve
