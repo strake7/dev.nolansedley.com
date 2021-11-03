@@ -9,14 +9,11 @@ export default function Bio() {
   return (
     <>
       Hello, I am Nolan! I currently develop as a software engineering manager
-      at{" "}
-      <Styled.a href="https://mindbody.io" target="blank">
-        Mindbody
-      </Styled.a>{" "}
-      where we build software to connect the world to wellness. The majority of
-      my articles are regarding .NET and JavaScript development though I also
-      dabble in Java, Ruby and Python. Find more about my career experience and
-      ongoing projects on{" "}
+      at {" "}
+      <Styled.a href="https://www.appfolioinvestmentmanagement.com/" target="blank">
+        Appfolio Investment Management
+      </Styled.a>
+      . I am especially well-versed in .NET and JavaScript development and have been recently making strides in Ruby. Find more information about my career experience at {" "}
       <Styled.a href="https://www.linkedin.com/in/nsedley/" target="blank">
         LinkedIn
       </Styled.a>{" "}
