@@ -1,0 +1,37 @@
+---
+title: Kubernetes Pod(s) Stuck in ContainerPending 
+date: 2023-09-28
+---
+
+When spinning up a large number of new pods such as with a release or scaling event you may encounter pods stuck in a `ContainerPending` state. 
+To troubleshoot this issue, follow these steps:
+
+1. Verify that you are targeting the correct cluster.
+2. Execute the following command to list pods and their statuses:
+   ```shell
+   kubectl get pods -n {namespace}
+   ```
+3. Look for pod(s) stuck in a state such as `ContainerCreating`.
+4. For the stuck pod, run the following command to get more detailed information:
+   ```shell
+   kubectl describe pod {pod_name} -n {namespace}
+   ```
+   If the pod has been created successfully, you can also access its logs using:
+   ```shell
+   kubectl logs {pod_name} -n {namespace}
+   ```
+
+Based on the output from these commands, you will have more insights to determine your next steps.
+
+One potential scenario causing a container to get stuck during creation is when the available IP addresses for the subnet have been exhausted.
+In this case, you might encounter an error message like `...failed to assign an IP address to container` in the describe output.
+To confirm this, check the subnet's "Available IPv4" addresses in AWS.
+The reasons for this are typically usually transient and include auto-scaling or you have some stale pods that are in need of pruning. 
+
+To better understand the reason for the exhausted pool check the EKS event logs.
+Those will help inform you about the number of pods and whether an scaling event was involved. 
+
+The number of IP addresses available in an AWS subnet is defined by the subnet's CIDR (Classless Inter-Domain Routing) notation, which defines the range of IP addresses available within the subnet.
+The formula to calculate the number of IP addresses in a subnet is 2^(32 - prefix length).
+If you suspect you IP pool is too low, consider changing the CIDR. 
+
