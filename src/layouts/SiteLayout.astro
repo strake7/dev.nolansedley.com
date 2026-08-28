@@ -8,7 +8,7 @@ interface Props {
 }
 
 const {
-  title = "Nolan Sedley — Software notes",
+  title = "Nolan Sedley — Development notes",
   description = "Notes and a public development journal on software systems, engineering leadership, and the ideas between them.",
   image,
 } = Astro.props
@@ -51,7 +51,7 @@ const pageTitle = title.includes("Nolan Sedley") ? title : `${title} — Nolan S
         <slot />
       </main>
       <footer class="site-footer">
-        <p>Built with care in California.</p>
+        <p>Keep building</p>
         <p>© {new Date().getFullYear()} Nolan Sedley</p>
       </footer>
     </div>
