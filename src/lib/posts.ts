@@ -5,18 +5,23 @@ export type Post = CollectionEntry<"posts">
 export const postPath = (post: Post) =>
   `/${post.id.replace(/\/index$/, "")}/`
 
-export const postTopic = (post: Post) => {
-  const topic = post.id.split("/")[0]
-  const labels: Record<string, string> = {
-    dotnet: ".NET",
-    kubernetes: "Kubernetes",
-    ruby: "Ruby",
-    "windows-containers": "Containers",
-    "windows-terminals": "Developer tools",
-  }
-
-  return labels[topic] ?? "Engineering"
+const tagLabels: Record<string, string> = {
+  architecture: "Architecture",
+  devx: "DevX",
+  dotnet: ".NET",
+  emacs: "Emacs",
+  javascript: "JavaScript",
+  kubernetes: "Kubernetes",
+  operations: "Operations",
+  performance: "Performance",
+  reliability: "Reliability",
+  ruby: "Ruby",
+  sql: "SQL",
+  windows: "Windows",
 }
+
+export const postTags = (post: Post) =>
+  post.data.tags.map((tag) => tagLabels[tag] ?? tag)
 
 export const postSummary = (post: Post) => {
   if (post.data.description) return post.data.description

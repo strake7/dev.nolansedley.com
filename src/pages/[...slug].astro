@@ -2,7 +2,7 @@
 import { Image } from "astro:assets"
 import { getCollection, render } from "astro:content"
 import SiteLayout from "../layouts/SiteLayout.astro"
-import { postSummary, postTopic, sortPosts } from "../lib/posts"
+import { postSummary, postTags, sortPosts } from "../lib/posts"
 
 export async function getStaticPaths() {
   const posts = sortPosts(await getCollection("posts"))
@@ -27,7 +27,7 @@ const formattedDate = new Intl.DateTimeFormat("en-US", {
     <header class="article-header">
       <a class="back-link" href="/#writing"><span aria-hidden="true">←</span> All writing</a>
       <div class="post-meta article-meta">
-        <span>{postTopic(post)}</span>
+        {postTags(post).map((tag) => <span>{tag}</span>)}
         <time datetime={post.data.date.toISOString()}>{formattedDate}</time>
       </div>
       <h1>{post.data.title}</h1>

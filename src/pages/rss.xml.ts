@@ -1,5 +1,5 @@
 import { getCollection } from "astro:content"
-import { postPath, postSummary, sortPosts } from "../lib/posts"
+import { postPath, postSummary, postTags, sortPosts } from "../lib/posts"
 
 const escapeXml = (value: string) =>
   value.replace(/[<>&'"]/g, (character) => {
@@ -23,6 +23,9 @@ export async function GET({ site }: { site: URL }) {
         <link>${url}</link>
         <guid>${url}</guid>
         <pubDate>${post.data.date.toUTCString()}</pubDate>
+        ${postTags(post)
+          .map((tag) => `<category>${escapeXml(tag)}</category>`)
+          .join("\n        ")}
         <description>${escapeXml(postSummary(post))}</description>
       </item>`
     })

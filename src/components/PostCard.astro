@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets"
 import type { Post } from "../lib/posts"
-import { postPath, postSummary, postTopic } from "../lib/posts"
+import { postPath, postSummary, postTags } from "../lib/posts"
 
 interface Props {
   post: Post
@@ -30,13 +30,13 @@ const formattedDate = new Intl.DateTimeFormat("en-US", {
     </a>
   ) : (
     <a class="post-card-image post-card-placeholder" href={postPath(post)} tabindex="-1" aria-hidden="true">
-      <span>{postTopic(post).slice(0, 2)}</span>
+      <span>{postTags(post)[0].slice(0, 2)}</span>
       <i></i>
     </a>
   )}
   <div class="post-card-content">
     <div class="post-meta">
-      <span>{postTopic(post)}</span>
+      {postTags(post).map((tag) => <span>{tag}</span>)}
       <time datetime={post.data.date.toISOString()}>{formattedDate}</time>
     </div>
     <h3><a href={postPath(post)}>{post.data.title}</a></h3>

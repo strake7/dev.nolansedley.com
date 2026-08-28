@@ -1,6 +1,7 @@
 ---
 title: The `TOP 1` Threat
 date: 2021-02-02
+tags: [sql, reliability]
 image: ./top1.jpg
 imageAlt: Image of TOP 1 query
 ---
