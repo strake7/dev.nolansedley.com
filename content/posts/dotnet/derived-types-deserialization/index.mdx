@@ -42,7 +42,7 @@ A contract like this is fairly common and something that we should be able to su
 ## Setup
 Parsing this request we can see that the `instrumentType` property contains a value that denotes what other properties are present on the model. We should feel comfortable creating types that emulate this organization along with a controller to accept the request:
 
-```C#
+```csharp
 // model
 public abstract class Musician
 {
@@ -76,7 +76,7 @@ public class MusiciansController : ControllerBase
 
 Also note that for this example I will be using the community-favorite JSON serializer for .NET, [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json). Even though .NET Core 3 has introduced [a new default serializer](https://docs.microsoft.com/en-us/dotnet/api/system.text.json?view=netcore-3.0), Newtonsoft remains the most fully featured solution at present. It is configured like so in the API's startup:
 
-```C#
+```csharp
 services
   .AddControllers()
   .AddNewtonsoftJson(services => {  });

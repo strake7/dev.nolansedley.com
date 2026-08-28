@@ -1,17 +1,27 @@
 {
-  "name": "gatsby-starter-blog-theme",
+  "name": "dev-nolansedley-com",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.1",
+  "type": "module",
+  "packageManager": "pnpm@10.33.4",
+  "engines": {
+    "node": ">=22.12.0 <26",
+    "pnpm": ">=10"
+  },
   "scripts": {
-    "develop": "gatsby develop",
-    "start": "gatsby develop",
-    "build": "gatsby build",
-    "clean": "gatsby clean"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check"
   },
   "dependencies": {
-    "gatsby": "^4.25.9",
-    "gatsby-theme-blog": "^4.0.0",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "@astrojs/mdx": "^7.0.8",
+    "astro": "^7.2.8",
+    "sharp": "^0.35.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.0"
   }
 }

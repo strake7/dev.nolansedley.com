@@ -1,0 +1,48 @@
+---
+import { Image } from "astro:assets"
+import type { Post } from "../lib/posts"
+import { postPath, postSummary, postTopic } from "../lib/posts"
+
+interface Props {
+  post: Post
+  featured?: boolean
+}
+
+const { post, featured = false } = Astro.props
+const formattedDate = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+}).format(post.data.date)
+---
+
+<article class:list={["post-card", { featured }]}>
+  {post.data.image ? (
+    <a class="post-card-image" href={postPath(post)} tabindex="-1" aria-hidden="true">
+      <Image
+        src={post.data.image}
+        alt={post.data.imageAlt ?? ""}
+        widths={[480, 800, 1200]}
+        sizes={featured ? "(min-width: 800px) 50vw, 100vw" : "(min-width: 800px) 33vw, 100vw"}
+        loading={featured ? "eager" : "lazy"}
+      />
+    </a>
+  ) : (
+    <a class="post-card-image post-card-placeholder" href={postPath(post)} tabindex="-1" aria-hidden="true">
+      <span>{postTopic(post).slice(0, 2)}</span>
+      <i></i>
+    </a>
+  )}
+  <div class="post-card-content">
+    <div class="post-meta">
+      <span>{postTopic(post)}</span>
+      <time datetime={post.data.date.toISOString()}>{formattedDate}</time>
+    </div>
+    <h3><a href={postPath(post)}>{post.data.title}</a></h3>
+    <p>{postSummary(post)}</p>
+    <a class="read-link" href={postPath(post)} aria-label={`Read ${post.data.title}`}>
+      Read article <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</article>

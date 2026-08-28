@@ -1,7 +1,7 @@
 ---
 title: The `TOP 1` Threat
 date: 2021-02-02
-image: ./top1.png
+image: ./top1.jpg
 imageAlt: Image of TOP 1 query
 ---
 Admittedly, 'Threat' is an extreme word to use but is worth the buzz, right? 
@@ -10,7 +10,7 @@ This article stems from a comment a coworker posted on a repository I also
 monitor. The comment called into question the use of `TOP 1` in a MSSQL query
 using unique criteria in the where clause.A simplified example of the query
 looks something like this: 
-```C#
+```csharp
 SomeEntity.Select("select TOP 1 Id from Users where username = '@username'").Execute().FirstOrDefault();
 ``` 
 In this example, the column `username` is guaranteed to be unique by an index on
@@ -43,4 +43,4 @@ proper implementation is easy in this situation:
    exception. Help us catch bugs.
 
 That is it. When in doubt, remember to keep it simple and avoid adding code that
-is not purposeful. 
+is not purposeful.

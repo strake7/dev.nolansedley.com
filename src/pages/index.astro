@@ -1,0 +1,59 @@
+---
+import { getCollection } from "astro:content"
+import PostCard from "../components/PostCard.astro"
+import SiteLayout from "../layouts/SiteLayout.astro"
+import { sortPosts } from "../lib/posts"
+
+const posts = sortPosts(await getCollection("posts"))
+const [featuredPost, ...morePosts] = posts
+---
+
+<SiteLayout>
+  <section class="hero">
+    <div class="hero-kicker"><span></span> Engineering field notes</div>
+    <h1>Building software.<br /><em>Sharing the useful parts.</em></h1>
+    <p class="hero-copy">
+      A public development journal for practical notes, evolving ideas, and lessons on
+      software systems, engineering leadership, and the space between them.
+    </p>
+    <a class="hero-cta" href="#writing">Browse the notes <span aria-hidden="true">↓</span></a>
+    <div class="hero-code" aria-hidden="true">
+      <span>01</span> observe<br />
+      <span>02</span> understand<br />
+      <span>03</span> improve<span class="cursor"></span>
+    </div>
+  </section>
+
+  <section class="writing-section" id="writing">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">The archive</p>
+        <h2>Latest writing</h2>
+      </div>
+      <p>{posts.length.toString().padStart(2, "0")} notes and counting</p>
+    </div>
+
+    {featuredPost && <PostCard post={featuredPost} featured />}
+    <div class="post-grid">
+      {morePosts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+
+  <section class="about-section" id="about">
+    <p class="eyebrow">About the author</p>
+    <div class="about-grid">
+      <h2>I’m Nolan, an engineering leader who still likes getting close to the code.</h2>
+      <div>
+        <p>
+          I build software and lead engineering teams at AppFolio Investment Management.
+          My background spans .NET, JavaScript, Ruby, distributed systems, and the human
+          systems that make good engineering possible.
+        </p>
+        <div class="about-links">
+          <a href="https://www.linkedin.com/in/nsedley/">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/strake7">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</SiteLayout>
