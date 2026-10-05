@@ -5,55 +5,38 @@ import SiteLayout from "../layouts/SiteLayout.astro"
 import { sortPosts } from "../lib/posts"
 
 const posts = sortPosts(await getCollection("posts"))
-const [featuredPost, ...morePosts] = posts
 ---
 
 <SiteLayout>
-  <section class="hero">
-    <div class="hero-kicker"><span></span> Software engineering </div>
-    <h1>Building software.<br /><em>Sharing the useful parts.</em></h1>
-    <p class="hero-copy">
-      Development journal for practical notes, evolving ideas, and lessons on
-      software systems, engineering leadership, and the space between them.
+  <section class="intro">
+    <p>
+      Notes on software systems, engineering leadership, and the space between
+      them.
     </p>
-    <a class="hero-cta" href="#writing">Browse the notes <span aria-hidden="true">↓</span></a>
   </section>
 
   <section class="writing-section" id="writing">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">The archive</p>
-        <h2>Latest writing</h2>
-      </div>
-      <p>{posts.length.toString().padStart(2, "0")} notes and counting</p>
-    </div>
-
-    {featuredPost && <PostCard post={featuredPost} featured />}
-    <div class="post-grid">
-      {morePosts.map((post) => <PostCard post={post} />)}
-    </div>
+    <h2>Writing</h2>
+    <ul class="post-list">
+      {posts.map((post) => <li><PostCard post={post} /></li>)}
+    </ul>
   </section>
 
   <section class="about-section" id="about">
-    <p class="eyebrow">About the author</p>
-    <div class="about-grid">
-      <h2>I’m Nolan, an engineering leader who still likes getting close to the code.</h2>
-      <div>
-        <p>
-          I’m an engineering manager at Ontra, where I lead the teams
-          shipping emerging AI products for private markets. Over 14 years I’ve gone deep on Ruby, .NET and
-          JavaScript building and scaling
-          platforms at Mindbody, AppFolio and Ontra along the way.
-        </p>
-        <p>
-          Lately, I’ve been focused on how to build and deploy agentic systems for production,
-          client-facing applications.
-        </p>
-        <div class="about-links">
-          <a href="https://www.linkedin.com/in/nsedley/">LinkedIn <span aria-hidden="true">↗</span></a>
-          <a href="https://github.com/strake7">GitHub <span aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-    </div>
+    <h2>About</h2>
+    <p>
+      I’m Nolan, an engineering manager at Ontra, where I lead the teams
+      shipping emerging AI products for private markets. Over 14 years I’ve
+      gone deep on Ruby, .NET and JavaScript, building and scaling platforms at
+      Mindbody, AppFolio and Ontra along the way.
+    </p>
+    <p>
+      Lately, I’ve been focused on how to build and deploy agentic systems for
+      production, client-facing applications.
+    </p>
+    <p class="about-links">
+      <a href="https://www.linkedin.com/in/nsedley/">LinkedIn</a>
+      <a href="https://github.com/strake7">GitHub</a>
+    </p>
   </section>
 </SiteLayout>

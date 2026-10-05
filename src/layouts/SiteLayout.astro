@@ -37,21 +37,17 @@ const pageTitle = title.includes("Nolan Sedley") ? title : `${title} — Nolan S
   <body>
     <div class="site-shell">
       <header class="site-header">
-        <a class="wordmark" href="/" aria-label="Nolan Sedley, home">
-          <span class="wordmark-mark" aria-hidden="true">NS</span>
-          <span>Nolan Sedley</span>
-        </a>
+        <a class="wordmark" href="/">Nolan Sedley</a>
         <nav aria-label="Primary navigation">
           <a href="/#writing">Writing</a>
           <a href="/#about">About</a>
-          <a href="https://github.com/strake7" rel="me">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/strake7" rel="me">GitHub</a>
         </nav>
       </header>
       <main>
         <slot />
       </main>
       <footer class="site-footer">
-        <p>Keep building</p>
         <p>© {new Date().getFullYear()} Nolan Sedley</p>
       </footer>
     </div>
