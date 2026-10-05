@@ -1,0 +1,192 @@
+--- 
+title: "Agent-shell in Emacs" 
+date: 2026-08-27 
+tags: [emacs, devx]
+description: "Wiring agent-shell into Projectile projects, workspaces, and notifications."
+---
+
+It occurred to me recently that I haven't configured an LSP server in over a
+year. Why not? Fifteen minutes of watching my own usage patterns gave me the
+answer: I ask an agent instead. *Where is this defined? What's the call tree
+above this? Is there a fix for this deprecation warning?* I used to reach for an
+LSP to answer questions like these.
+
+Goodness knows an agent isn't faster. I'll admit part of it is novelty. But the
+most compelling reason is that the agent hands back more context. Instead of me
+trawling through the surrounding chain of methods and attributes, it's usually
+doing so as part of a larger job and it's usually better at telling me what
+matters.
+
+But, there was a gap. A coding agent belongs to a branch, a directory, and the
+mental context around a task. My editor was already organized that way, with a
+project and a workspace per line of work, but my agent shells weren't part of
+it. They floated around as orphaned buffers, detached from the code they were
+working on.
+
+The tool that I've found most ammenable to fit my workflow is Xenodium's
+[agent-shell](https://github.com/xenodium/agent-shell). Alongside my config, the
+circus of agent sessions I have running in a semblance of order. With a
+keystroke I can send context from the buffer I'm editing to an agent-shell
+buffer and send my instructions.
+
+After a lot of time with agent-shell, I've collected some configuration that
+closes that gap and brings those shells into the fold.
+
+## Kick off a new worktree with a new shell
+
+Git worktrees are fantastic for branches of work within one project, and agent
+clients have caught on. Claude Code and Codex give each session its own worktree
+automatically. Parallel agents want parallel checkouts, so most tooling these
+days hands you one without asking.
+
+Sometimes, though, I want more than a scratch checkout: a bug, a display glitch,
+some code that needs restructuring. For those I want a full workspace, with the
+whole IDE ready to bring to bear.
+
+This helper prompts for a project and a worktree name, creates the worktree next
+to the main checkout (reusing the branch if it already exists), registers it
+with Projectile, and opens it in a named workspace. The `+workspace-switch` call
+is a Doom helper over persp-mode; everything else is plain Projectile and Git.
+
+```elisp
+(defun strake/project-worktree-workspace ()
+  "Open a project in a new workspace, optionally in a fresh git worktree."
+  (interactive)
+  (let* ((project (file-name-as-directory
+                   (expand-file-name
+                    (completing-read "Select project: "
+                                     projectile-known-projects nil t))))
+         (project-name (projectile-project-name project))
+         (git-p (locate-dominating-file project ".git"))
+         (wt-name (when git-p
+                    (string-trim (read-string "Worktree name (empty to skip): ")))))
+    (if (and wt-name (not (string-empty-p wt-name)))
+        (let* ((ws-name (format "%s-%s" project-name wt-name))
+               (wt-path (expand-file-name
+                         ws-name
+                         (file-name-directory (directory-file-name project)))))
+          (unless (file-directory-p wt-path)
+            (let* ((default-directory project)
+                   (branch-exists
+                    (zerop (call-process "git" nil nil nil "rev-parse" "--verify"
+                                         (concat "refs/heads/" wt-name))))
+                   (exit (apply #'call-process "git" nil "*git-worktree*" nil
+                                "worktree" "add"
+                                (if branch-exists
+                                    (list wt-path wt-name)
+                                  (list "-b" wt-name wt-path)))))
+              (unless (zerop exit)
+                (pop-to-buffer "*git-worktree*")
+                (user-error "git worktree add failed"))))
+          (+workspace-switch ws-name t)
+          (projectile-add-known-project wt-path)
+          (projectile-switch-project-by-name wt-path))
+      (+workspace-switch project-name t)
+      (projectile-switch-project-by-name project))))
+```
+
+The worktree directory, the Projectile project, and the workspace all share one
+name, and everything below leans on that. Example: running the helper on `myapp`
+with the worktree name `fix-login` gives:
+
+```text
+myapp-fix-login
+├── git worktree        ~/src/myapp-fix-login   (branch fix-login)
+├── Projectile project  ~/src/myapp-fix-login
+└── workspace           myapp-fix-login
+    └── agent shell     started here, and remembers it
+```
+
+Done. It's now a first-class Projectile project that I can reopen, resume, and
+use all my usual tools in.
+
+## Switch the workspace, not just the buffer
+
+agent-shell's own picker lists every shell, but it has no idea which workspace
+each one belongs to. So rather than dragging a shell buffer into whatever
+workspace I happen to be in, I want the switcher to take me to the shell's
+*home*.
+
+For that, each shell first needs to know where home is. A shell knows its
+working directory, but a directory isn't quite enough, since several workspaces
+can point into the same project once worktrees are involved. So each shell
+records the workspace it was created in:
+
+```elisp
+(defvar-local strake/agent-shell-workspace nil
+  "Workspace in which this agent shell was created.")
+
+(add-hook 'agent-shell-mode-hook
+          (lambda ()
+            (setq-local strake/agent-shell-workspace
+                        (when (bound-and-true-p persp-mode)
+                          (+workspace-current-name)))))
+```
+
+Buffer-local state is the right shape here: every shell carries its own origin,
+and the value dies with the buffer instead of piling up in a registry that needs
+syncing.
+
+The switcher reads that value and goes to the shell's home workspace. If that
+workspace is gone, it falls back to the workspace named after the shell's
+project, then to any workspace that already holds the buffer:
+
+```elisp
+(defun strake/agent-shell-switch ()
+  "Switch to a live agent shell in its native workspace."
+  (interactive)
+  (let* ((buffer (agent-shell--read-shell-buffer :prompt "Switch to shell: "))
+         (native-workspace
+          (buffer-local-value 'strake/agent-shell-workspace buffer))
+         (project-name
+          (with-current-buffer buffer
+            (when (fboundp 'projectile-project-name)
+              (projectile-project-name (agent-shell-cwd)))))
+         (workspace
+          (or (and native-workspace
+                   (+workspace-get native-workspace t))
+              (and project-name (+workspace-get project-name t))
+              (seq-find (lambda (candidate)
+                          (+workspace-contains-buffer-p buffer candidate))
+                        (+workspace-list)))))
+    (when workspace
+      (+workspace-switch (safe-persp-name workspace)))
+    (agent-shell--display-buffer buffer)))
+```
+
+Small warning: the switcher calls two internal `agent-shell` functions
+(`agent-shell--read-shell-buffer` and `agent-shell--display-buffer`). That keeps
+the interaction consistent with the package's own picker, but internals can
+change, so expect this to break on some future update.
+
+## Notify me only when I've looked away
+
+I now have several shells running in separate workspaces, and I need to know
+which one wants me. A completion chime is helpful in the background and
+irritating in the foreground. `agent-shell` emits a `turn-complete` event, so
+each shell subscribes at creation and checks whether it's currently visible:
+
+```elisp
+(use-package! alert
+  :config
+  (setq alert-default-style 'osx-notifier))
+
+(defvar strake/agent-shell-completion-sound
+      "/System/Library/Sounds/Hero.aiff")
+
+(add-hook 'agent-shell-mode-hook
+          (lambda ()
+            (agent-shell-subscribe-to
+             :shell-buffer (current-buffer)
+             :event 'turn-complete
+             :on-event
+             (lambda (event)
+               (let ((buffer (map-nested-elt event '(:data :buffer))))
+                 (unless (get-buffer-window buffer)
+                   (when (file-readable-p strake/agent-shell-completion-sound)
+                     (start-process "agent-shell-completion-sound" nil
+                                    "afplay" strake/agent-shell-completion-sound))
+                   (alert (format "%s finished" (buffer-name buffer))
+                          :title "Agent Shell"
+                          :category 'agent-shell)))))))
+```
